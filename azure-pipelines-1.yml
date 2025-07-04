@@ -1,0 +1,39 @@
+trigger:
+- main
+
+stages:
+- stage: Build
+  displayName: 'Build Application'
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'ubuntu-latest'  # Microsoft-hosted agent
+    steps:
+    - script: echo "Building the secure banking application..."
+      displayName: 'Run build'
+
+- stage: Test
+  displayName: 'Security & Compliance Tests'
+  dependsOn: Build
+  jobs:
+  - job: Test
+    pool:
+      vmImage: 'ubuntu-latest'  # Microsoft-hosted agent
+    steps:
+    - script: echo "Running security scans..."
+      displayName: 'Security Scan'
+
+- stage: Deploy
+  displayName: 'Deploy to On-Premises'
+  dependsOn: Test
+  condition: succeeded('Test')
+  jobs:
+  - deployment: DeployToProd
+    pool: SecureAgents  # Self-hosted agent
+    environment: 'Production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: echo "Deploying to secure on-premises servers..."
+            displayName: 'Run Deployment'
