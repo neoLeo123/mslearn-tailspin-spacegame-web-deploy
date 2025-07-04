@@ -1,0 +1,10 @@
+trigger:
+- main
+
+pool:
+
+  vmImage: 'ubuntu-latest'  # Uses Microsoft-hosted Linux agent
+
+steps:
+- script: echo "Running on Microsoft-hosted agent"
+  displayName: 'Test Microsoft-hosted agent'
